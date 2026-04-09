@@ -1,3 +1,4 @@
+//using testcafe to test the frontend of the expense tracker app
 import { Selector } from 'testcafe';
 
 fixture `Expense Tracker App`

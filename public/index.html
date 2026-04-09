@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <style>
+ :root {
+  --accent: #6c63ff;
+  --accent2: #ff6584;
+  --bg: rgb(197, 192, 192);
+  --glass: rgba(255, 255, 255, 0.7);
+  --border: rgba(255, 255, 255, 0.3);
+  --text: #1f2937;
+  --muted: #6b7280;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Container */
+.wrap {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem 1.2rem;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.accent {
+  background: linear-gradient(45deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Glass card */
+.add-form, .expense-card {
+  backdrop-filter: blur(14px);
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Form */
+.add-form {
+  padding: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.add-form input,
+.add-form select {
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.add-form input:focus,
+.add-form select:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Button */
+button {
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+}
+
+.add-form button {
+  background: linear-gradient(45deg, var(--accent), var(--accent2));
+  color: white;
+  transition: 0.2s;
+}
+
+.add-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* Cards */
+.expense-card {
+  padding: 1.2rem;
+  transition: 0.25s;
+}
+
+.expense-card:hover {
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* Amount */
+.amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Badge */
+.badge {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #f1f5f9;
+}
+
+/* Buttons */
+.card-actions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background: #e0e7ff;
+}
+
+.btn-delete {
+  background: #fee2e2;
+}
+
+.btn-save {
+  background: #d1fae5;
+}
+
+.btn-cancel {
+  background: #f3f4f6;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  color: var(--muted);
+}
+/* FIX: Edit mode styling */
+.edit-fields input,
+.edit-fields select {
+  padding: 0.7rem;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #fff;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.edit-fields input:focus,
+.edit-fields select:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Better spacing */
+.edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1><span class="accent">Expense</span> Tracker</h1>
+    </header>
+<div id="summary" style="
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  font-weight: 600;
+">
+  Total Expenses: $0
+</div>
+    <div id="error-banner" class="error-banner" role="alert"></div>
+
+    <form id="add-form" class="add-form" autocomplete="off">
+      <label>
+        Title
+        <input type="text" id="title" name="title" required placeholder="e.g. Monthly rent" />
+      </label>
+      <label>
+        Amount
+        <input type="number" id="amount" name="amount" step="0.01" min="0" required placeholder="0.00" />
+      </label>
+      <label>
+        Category
+        <select id="category" name="category" required>
+          <option value="">Select…</option>
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Bills">Bills</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Health">Health</option>
+        </select>
+      </label>
+      <label>
+        Date
+        <input type="date" id="date" name="date" required />
+      </label>
+      <button type="submit">Add expense</button>
+    </form>
+
+    <div id="expense-grid" class="grid" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:3001';
+
+    const CATEGORY_CLASS = {
+      Food: 'badge-food',
+      Transport: 'badge-transport',
+      Shopping: 'badge-shopping',
+      Bills: 'badge-bills',
+      Entertainment: 'badge-entertainment',
+      Health: 'badge-health',
+    };
+
+    function formatMoney(n) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(n));
+    }
+
+    function badgeClass(category) {
+      return CATEGORY_CLASS[category] || 'badge-default';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-banner');
+      el.textContent = msg;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 5000);
+    }
+
+    async function fetchJson(url, options = {}) {
+      const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options,
+      });
+      if (res.status === 204) return null;
+      const data = res.headers.get('content-type')?.includes('application/json')
+        ? await res.json()
+        : null;
+      if (!res.ok) {
+        const err = data?.error || res.statusText || 'Request failed';
+        throw new Error(err);
+      }
+      return data;
+    }
+
+    let expenses = [];
+    let editingId = null;
+
+    function render() {
+      const total = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+document.getElementById('summary').textContent =
+  'Total Expenses: ' + formatMoney(total);
+      const grid = document.getElementById('expense-grid');
+      grid.innerHTML = '';
+
+      if (!expenses.length) {
+        const p = document.createElement('p');
+        p.className = 'empty';
+        p.textContent = 'No expenses yet. Add one above.';
+        grid.appendChild(p);
+        return;
+      }
+
+      for (const e of expenses) {
+        const card = document.createElement('article');
+        card.className = 'expense-card';
+        card.dataset.id = String(e.id);
+
+        if (editingId === e.id) {
+          card.innerHTML = `
+            <div class="edit-fields">
+              <input type="text" class="edit-title" value="${escapeHtml(e.title)}" aria-label="Title" />
+              <input type="number" class="edit-amount" step="0.01" min="0" value="${escapeHtml(String(e.amount))}" aria-label="Amount" />
+              <select class="edit-category" aria-label="Category">
+                ${['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health']
+                  .map(
+                    (c) =>
+                      `<option value="${c}"${c === e.category ? ' selected' : ''}>${c}</option>`
+                  )
+                  .join('')}
+              </select>
+              <input type="date" class="edit-date" value="${escapeHtml(e.date)}" aria-label="Date" />
+            </div>
+            <div class="card-actions">
+              <button type="button" class="btn-save save-edit">Save</button>
+              <button type="button" class="btn-cancel cancel-edit">Cancel</button>
+            </div>
+          `;
+          card.querySelector('.save-edit').addEventListener('click', () => saveEdit(e.id, card));
+          card.querySelector('.cancel-edit').addEventListener('click', () => {
+            editingId = null;
+            render();
+          });
+        } else {
+          card.innerHTML = `
+            <h2>${escapeHtml(e.title)}</h2>
+            <div class="amount">${formatMoney(e.amount)}</div>
+            <span class="badge ${badgeClass(e.category)}">${escapeHtml(e.category)}</span>
+            <div class="date">${escapeHtml(e.date)}</div>
+            <div class="card-actions">
+              <button type="button" class="btn-edit">Edit</button>
+              <button type="button" class="btn-delete">Delete</button>
+            </div>
+          `;
+          card.querySelector('.btn-edit').addEventListener('click', () => {
+            editingId = e.id;
+            render();
+          });
+          card.querySelector('.btn-delete').addEventListener('click', () => deleteExpense(e.id));
+        }
+
+        grid.appendChild(card);
+      }
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    async function loadExpenses() {
+      try {
+        expenses = await fetchJson(`${API}/expenses`);
+        if (!Array.isArray(expenses)) expenses = [];
+        render();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    document.getElementById('add-form').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const amount = document.getElementById('amount').value;
+      const category = document.getElementById('category').value;
+      const date = document.getElementById('date').value;
+      try {
+        await fetchJson(`${API}/expenses`, {
+          method: 'POST',
+          body: JSON.stringify({
+            title,
+            amount: Number.parseFloat(amount, 10),
+            category,
+            date,
+          }),
+        });
+        ev.target.reset();
+        await loadExpenses();
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    async function saveEdit(id, card) {
+      const title = card.querySelector('.edit-title').value.trim();
+      const amount = card.querySelector('.edit-amount').value;
+      const category = card.querySelector('.edit-category').value;
+      const date = card.querySelector('.edit-date').value;
+      try {
+        await fetchJson(`${API}/expenses/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            title,
+            amount: Number.parseFloat(amount, 10),
+            category,
+            date,
+          }),
+        });
+        editingId = null;
+        await loadExpenses();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function deleteExpense(id) {
+      if (!confirm('Delete this expense?')) return;
+      try {
+        await fetchJson(`${API}/expenses/${id}`, { method: 'DELETE' });
+        if (editingId === id) editingId = null;
+        await loadExpenses();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    loadExpenses();
+  </script>
+</body>
+</html>

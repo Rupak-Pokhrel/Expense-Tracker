@@ -55,7 +55,7 @@ const SEED_EXPENSES = [
   { title: 'Bus pass', amount: 18.00, category: 'Transport', date: '2026-04-04' },
   { title: 'Lunch with colleagues', amount: 22.75, category: 'Food', date: '2026-04-05' },
   { title: 'Movie night', amount: 30.00, category: 'Entertainment', date: '2026-04-05' },
-  { title: 'Doctor visit', amount: 90.00, category: 'Health', date: '2026-04-06' },
+  { title: 'Doctor visit', amount: 92.00, category: 'Health', date: '2026-04-06' },
   { title: 'New headphones', amount: 55.00, category: 'Shopping', date: '2026-04-06' },
   { title: 'Dinner takeout', amount: 19.25, category: 'Food', date: '2026-04-07' },
   { title: 'Gas refill', amount: 45.00, category: 'Transport', date: '2026-04-07' },

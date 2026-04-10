@@ -12,6 +12,6 @@ The system allows users to manage expenses through Create, Read, Update, and Del
 ## How to Run
 -Install Dependencies: npm install
 -To start the application, run: npm start
--Server will run on: http://localhost:3000
+-Server will run on: http://localhost:3001
 -Run Client Application: public/index.html
 -Run TestCafe tests: npx testcafe chromium tests/

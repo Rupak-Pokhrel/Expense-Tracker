@@ -46,6 +46,7 @@ function exec(sql) {
 
 const SEED_EXPENSES = [
   { title: 'Breakfast at cafe', amount: 8.50, category: 'Food', date: '2026-04-01' },
+  { title: 'Laundry', amount: 8.50, category: 'Food', date: '2026-04-01' },
   { title: 'Taxi ride', amount: 12.00, category: 'Transport', date: '2026-04-01' },
   { title: 'Monthly rent', amount: 650.00, category: 'Bills', date: '2026-04-02' },
   { title: 'Grocery shopping', amount: 72.30, category: 'Food', date: '2026-04-02' },
